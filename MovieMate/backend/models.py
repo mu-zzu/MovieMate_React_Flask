@@ -1,0 +1,58 @@
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
+
+db = SQLAlchemy()
+
+
+class Movie(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    title = db.Column(db.String(100), nullable=False)
+    type = db.Column(db.String(20), nullable=False)  # Movie or TV Show
+    director = db.Column(db.String(100))
+    genre = db.Column(db.String(50))
+    platform = db.Column(db.String(50))
+
+    status = db.Column(
+        db.String(20),
+        default="Wishlist"
+    )  # Watching, Completed, Wishlist
+
+    episodes_watched = db.Column(
+        db.Integer,
+        default=0
+    )
+
+    total_episodes = db.Column(
+        db.Integer,
+        default=0
+    )
+
+    rating = db.Column(
+        db.Float
+    )
+
+    review = db.Column(
+        db.Text
+    )
+
+    created_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow
+    )
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "type": self.type,
+            "director": self.director,
+            "genre": self.genre,
+            "platform": self.platform,
+            "status": self.status,
+            "episodes_watched": self.episodes_watched,
+            "total_episodes": self.total_episodes,
+            "rating": self.rating,
+            "review": self.review,
+            "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        }
