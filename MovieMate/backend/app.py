@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from models import db, Movie
 
@@ -39,6 +39,30 @@ def get_movies():
         movie.to_dict()
         for movie in movies
     ])
+@app.route("/movies", methods=["POST"])
+def add_movie():
+    data = request.get_json()
+
+    movie = Movie(
+        title=data["title"],
+        type=data["type"],
+        director=data.get("director"),
+        genre=data.get("genre"),
+        platform=data.get("platform"),
+        status=data.get("status", "Wishlist"),
+        episodes_watched=data.get("episodes_watched", 0),
+        total_episodes=data.get("total_episodes", 0),
+        rating=data.get("rating"),
+        review=data.get("review")
+    )
+
+    db.session.add(movie)
+    db.session.commit()
+
+    return jsonify({
+        "message": "Movie added successfully!",
+        "movie": movie.to_dict()
+    }), 201
 
 
 # Run the Flask server
