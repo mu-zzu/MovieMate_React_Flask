@@ -1,6 +1,6 @@
 import "./MovieCard.css";
 
-function MovieCard({ movie }) {
+function MovieCard({ movie, onDelete }) {
     const progress =
         movie.total_episodes > 0
             ? (movie.episodes_watched / movie.total_episodes) * 100
@@ -11,21 +11,13 @@ function MovieCard({ movie }) {
             <h2>{movie.title}</h2>
 
             <p><strong>Type:</strong> {movie.type}</p>
+            <p><strong>Genre:</strong> {movie.genre}</p>
+            <p><strong>Platform:</strong> {movie.platform}</p>
+            <p><strong>Status:</strong> {movie.status}</p>
 
             <p>
-                <strong>Genre:</strong> {movie.genre}
-            </p>
-
-            <p>
-                <strong>Platform:</strong> {movie.platform}
-            </p>
-
-            <p>
-                <strong>Status:</strong> {movie.status}
-            </p>
-
-            <p>
-                <strong>Rating:</strong> ⭐ {movie.rating || "Not rated"}
+                <strong>Rating:</strong>
+                ⭐ {movie.rating || "Not rated"}
             </p>
 
             {movie.type === "TV Show" && (
@@ -44,8 +36,13 @@ function MovieCard({ movie }) {
             )}
 
             <div className="buttons">
-                <button>Edit</button>
-                <button>Delete</button>
+                <button>
+                    Edit
+                </button>
+
+                <button onClick={() => onDelete(movie.id)}>
+                    Delete
+                </button>
             </div>
         </div>
     );

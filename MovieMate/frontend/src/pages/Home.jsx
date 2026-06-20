@@ -14,7 +14,28 @@ function Home() {
             const response = await api.get("/movies");
             setMovies(response.data);
         } catch (error) {
-            console.error("Error fetching movies:", error);
+            console.error(error);
+        }
+    };
+
+    const handleDelete = async (id) => {
+        const confirmDelete = window.confirm(
+            "Are you sure you want to delete this movie?"
+        );
+
+        if (!confirmDelete) return;
+
+        try {
+            await api.delete(`/movies/${id}`);
+
+            setMovies(
+                movies.filter((movie) => movie.id !== id)
+            );
+
+            alert("Movie deleted successfully!");
+        } catch (error) {
+            console.error(error);
+            alert("Delete failed");
         }
     };
 
@@ -27,9 +48,10 @@ function Home() {
             ) : (
                 <div className="movie-grid">
                     {movies.map((movie) => (
-                        <MovieCard 
+                        <MovieCard
                             key={movie.id}
                             movie={movie}
+                            onDelete={handleDelete}
                         />
                     ))}
                 </div>
