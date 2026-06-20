@@ -131,9 +131,12 @@ def add_movie():
             episodes_watched=data.get("episodes_watched", 0),
             total_episodes=data.get("total_episodes", 0),
             rating=data.get("rating"),
-            review=data.get("review")
+            review=data.get("review"),
+             poster_url=data.get("poster_url"),
+    year=data.get("year"),
+    imdb_rating=data.get("imdb_rating")
         )
-
+ 
         db.session.add(movie)
         db.session.commit()
 
@@ -172,6 +175,20 @@ def update_movie(id):
     )
     movie.rating = data.get("rating", movie.rating)
     movie.review = data.get("review", movie.review)
+    movie.poster_url = data.get(
+    "poster_url",
+    movie.poster_url
+)
+
+    movie.year = data.get(
+       "year",
+    movie.year
+)
+
+    movie.imdb_rating = data.get(
+    "imdb_rating",
+    movie.imdb_rating
+)
 
     db.session.commit()
 
