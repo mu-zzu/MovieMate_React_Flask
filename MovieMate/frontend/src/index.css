@@ -6,7 +6,7 @@
 
 
 body {
-    background-image: url("./assets/background.jpg");
+    background-image: url("./assets/cinema3.jpg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -132,4 +132,25 @@ backdrop-filter: blur(10px);
 
 .form-container button:hover {
     background: #1d4ed8;
+}
+.title-search {
+    display: flex;
+    gap: 10px;
+}
+
+.title-search input {
+    flex: 1;
+}
+
+.title-search button {
+    width: 160px;
+    background: #111827;
+    color: white;
+}
+
+.poster-preview {
+    width: 200px;
+    border-radius: 10px;
+    margin: 10px auto;
+    display: block;
 }
