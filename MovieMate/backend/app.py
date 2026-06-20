@@ -39,30 +39,117 @@ def get_movies():
         movie.to_dict()
         for movie in movies
     ])
-@app.route("/movies", methods=["POST"])
-def add_movie():
-    data = request.get_json()
+@app.route("/movies/filter", methods=["GET"])
+def filter_movies():
 
-    movie = Movie(
-        title=data["title"],
-        type=data["type"],
-        director=data.get("director"),
-        genre=data.get("genre"),
-        platform=data.get("platform"),
-        status=data.get("status", "Wishlist"),
-        episodes_watched=data.get("episodes_watched", 0),
-        total_episodes=data.get("total_episodes", 0),
-        rating=data.get("rating"),
-        review=data.get("review")
+    genre = request.args.get("genre")
+    platform = request.args.get("platform")
+    status = request.args.get("status")
+
+
+    query = Movie.query
+
+
+    if genre:
+        query = query.filter(
+            Movie.genre.ilike(f"%{genre}%")
+        )
+
+
+    if platform:
+        query = query.filter(
+            Movie.platform.ilike(f"%{platform}%")
+        )
+
+
+    if status:
+        query = query.filter(
+            Movie.status.ilike(f"%{status}%")
+        )
+
+
+    movies = query.all()
+
+
+    return jsonify([
+        movie.to_dict()
+        for movie in movies
+    ])
+@app.route("/movies/sort", methods=["GET"])
+def sort_movies():
+
+    sort_by = request.args.get("by", "title")
+
+
+    if sort_by == "rating":
+        movies = Movie.query.order_by(
+            Movie.rating.desc()
+        ).all()
+
+    else:
+        movies = Movie.query.order_by(
+            Movie.title.asc()
+        ).all()
+
+
+    return jsonify([
+        movie.to_dict()
+        for movie in movies
+    ])
+@app.route("/movies/<int:id>", methods=["GET"])
+def get_movie(id):
+
+    movie = Movie.query.get_or_404(id)
+
+    return jsonify(
+        movie.to_dict()
     )
 
-    db.session.add(movie)
-    db.session.commit()
+@app.route("/movies", methods=["POST"])
+def add_movie():
+    try:
+        data = request.get_json()
 
-    return jsonify({
-        "message": "Movie added successfully!",
-        "movie": movie.to_dict()
-    }), 201
+        if not data.get("title"):
+            return jsonify({
+                "error": "Title is required"
+            }), 400
+
+        if not data.get("type"):
+            return jsonify({
+                "error": "Type is required"
+            }), 400
+
+
+        movie = Movie(
+            title=data["title"],
+            type=data["type"],
+            director=data.get("director"),
+            genre=data.get("genre"),
+            platform=data.get("platform"),
+            status=data.get("status", "Wishlist"),
+            episodes_watched=data.get("episodes_watched", 0),
+            total_episodes=data.get("total_episodes", 0),
+            rating=data.get("rating"),
+            review=data.get("review")
+        )
+
+        db.session.add(movie)
+        db.session.commit()
+
+
+        return jsonify({
+            "message": "Movie added successfully",
+            "movie": movie.to_dict()
+        }), 201
+
+
+    except Exception as e:
+        db.session.rollback()
+
+        return jsonify({
+            "error": str(e)
+        }), 500
 @app.route("/movies/<int:id>", methods=["PUT"])
 def update_movie(id):
     movie = Movie.query.get_or_404(id)
