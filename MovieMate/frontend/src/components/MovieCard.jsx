@@ -1,4 +1,5 @@
 import "./MovieCard.css";
+import { Link } from "react-router-dom";
 
 function MovieCard({ movie, onDelete }) {
     const progress =
@@ -36,10 +37,10 @@ function MovieCard({ movie, onDelete }) {
             )}
 
             <div className="buttons">
-                <button>
-                    Edit
-                </button>
-
+               <Link to={`/edit/${movie.id}`}>
+                   <button>Edit</button>
+              </Link>
+ 
                 <button onClick={() => onDelete(movie.id)}>
                     Delete
                 </button>

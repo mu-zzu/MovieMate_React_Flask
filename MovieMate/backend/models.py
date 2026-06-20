@@ -35,6 +35,9 @@ class Movie(db.Model):
     review = db.Column(
         db.Text
     )
+    poster_url = db.Column(db.String(500))
+    year = db.Column(db.String(10))
+    imdb_rating = db.Column(db.String(10))
 
     created_at = db.Column(
         db.DateTime,
@@ -54,5 +57,9 @@ class Movie(db.Model):
             "total_episodes": self.total_episodes,
             "rating": self.rating,
             "review": self.review,
+            "poster_url": self.poster_url,
+"year": self.year,
+"imdb_rating": self.imdb_rating,
+             
             "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S")
         }
