@@ -1,0 +1,40 @@
+.movie-card {
+    background: white;
+    width: 300px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}
+
+.movie-card h2 {
+    margin-bottom: 10px;
+}
+
+.movie-card p {
+    margin: 8px 0;
+}
+
+.progress-bar {
+    background: #ddd;
+    height: 10px;
+    border-radius: 10px;
+}
+
+.progress {
+    background: #2563eb;
+    height: 100%;
+    border-radius: 10px;
+}
+
+.buttons {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.buttons button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
