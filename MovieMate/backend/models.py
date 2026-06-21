@@ -64,6 +64,7 @@ class Movie(db.Model):
     poster_url = db.Column(db.String(500))
     year = db.Column(db.String(10))
     imdb_rating = db.Column(db.String(10))
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)
 
     created_at = db.Column(
         db.DateTime,
@@ -86,5 +87,6 @@ class Movie(db.Model):
             "poster_url": self.poster_url,
             "year": self.year,
             "imdb_rating": self.imdb_rating,
+            "user_id": self.user_id,
             "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S")
         }

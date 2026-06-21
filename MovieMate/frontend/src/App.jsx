@@ -1,23 +1,62 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 import Home      from "./pages/Home";
 import AddMovie  from "./pages/AddMovie";
 import EditMovie from "./pages/EditMovie";
 import Dashboard from "./pages/Dashboard";
+import Login     from "./pages/Login";
+import Signup    from "./pages/Signup";
 import Navbar    from "./components/Navbar";
 
 function App() {
     return (
-        <BrowserRouter>
-            <Navbar />
+        <AuthProvider>
+            <BrowserRouter>
+                <Navbar />
 
-            <Routes>
-                <Route path="/"           element={<Home />}      />
-                <Route path="/add"        element={<AddMovie />}  />
-                <Route path="/edit/:id"   element={<EditMovie />} />
-                <Route path="/dashboard"  element={<Dashboard />} />
-            </Routes>
-        </BrowserRouter>
+                <Routes>
+                    {/* Protected Routes */}
+                    <Route 
+                        path="/" 
+                        element={
+                            <ProtectedRoute>
+                                <Home />
+                            </ProtectedRoute>
+                        } 
+                    />
+                    <Route 
+                        path="/add" 
+                        element={
+                            <ProtectedRoute>
+                                <AddMovie />
+                            </ProtectedRoute>
+                        } 
+                    />
+                    <Route 
+                        path="/edit/:id" 
+                        element={
+                            <ProtectedRoute>
+                                <EditMovie />
+                            </ProtectedRoute>
+                        } 
+                    />
+                    <Route 
+                        path="/dashboard" 
+                        element={
+                            <ProtectedRoute>
+                                <Dashboard />
+                            </ProtectedRoute>
+                        } 
+                    />
+
+                    {/* Public Routes */}
+                    <Route path="/login"  element={<Login />}  />
+                    <Route path="/signup" element={<Signup />} />
+                </Routes>
+            </BrowserRouter>
+        </AuthProvider>
     );
 }
 
