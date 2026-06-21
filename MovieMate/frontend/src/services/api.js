@@ -1,7 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://127.0.0.1:5000";
-
+const API_URL = "https://moviemate-6hh0.onrender.com"
 const api = axios.create({
     baseURL: API_URL,
 });
@@ -27,7 +26,7 @@ api.interceptors.response.use(
         if (error.response && error.response.status === 401) {
             localStorage.removeItem("moviemate_token");
             localStorage.removeItem("moviemate_user");
-            
+
             // Redirect to login if window is available
             if (typeof window !== "undefined" && window.location.pathname !== "/login" && window.location.pathname !== "/signup") {
                 window.location.href = "/login";
