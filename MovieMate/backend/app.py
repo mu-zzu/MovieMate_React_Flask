@@ -208,6 +208,43 @@ def delete_movie(id):
     })
 
 
+@app.route("/statistics", methods=["GET"])
+def get_statistics():
+    """Return aggregate statistics for the Statistics Dashboard."""
+    from sqlalchemy import func
+
+    total_items     = Movie.query.count()
+    completed       = Movie.query.filter_by(status="Completed").count()
+    watching        = Movie.query.filter_by(status="Watching").count()
+    wishlist        = Movie.query.filter_by(status="Wishlist").count()
+
+    # Average of user-provided ratings (exclude NULL rows)
+    avg_rating_row  = db.session.query(func.avg(Movie.rating)).filter(
+        Movie.rating.isnot(None)
+    ).scalar()
+    average_rating  = round(float(avg_rating_row), 1) if avg_rating_row else 0.0
+
+    # Sum of episodes watched across all TV shows
+    episodes_row    = db.session.query(func.sum(Movie.episodes_watched)).scalar()
+    total_episodes_watched = int(episodes_row) if episodes_row else 0
+
+    # Count breakdown: movies vs TV shows
+    total_movies    = Movie.query.filter_by(type="Movie").count()
+    total_tv_shows  = Movie.query.filter_by(type="TV Show").count()
+
+    return jsonify({
+        "total_items":           total_items,
+        "completed":             completed,
+        "watching":              watching,
+        "wishlist":              wishlist,
+        "average_rating":        average_rating,
+        "total_episodes_watched": total_episodes_watched,
+        "total_movies":          total_movies,
+        "total_tv_shows":        total_tv_shows,
+        "last_updated":          __import__("datetime").datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+    })
+
+
 # Run the Flask server
 if __name__ == "__main__":
     app.run(debug=True)

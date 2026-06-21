@@ -22,6 +22,8 @@ function AddMovie() {
         imdb_rating: "",
     });
 
+    const [fetching, setFetching] = useState(false);
+
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -34,155 +36,245 @@ function AddMovie() {
 
         try {
             await api.post("/movies", formData);
-
             alert("Movie added successfully!");
-
             navigate("/");
         } catch (error) {
             console.error(error);
             alert("Failed to add movie");
         }
     };
+
     const handleFetchMovie = async () => {
-    if (!formData.title) {
-        alert("Enter a movie title first!");
-        return;
-    }
+        if (!formData.title) {
+            alert("Enter a movie title first!");
+            return;
+        }
 
-    const data = await fetchMovieDetails(formData.title);
+        setFetching(true);
+        const data = await fetchMovieDetails(formData.title);
+        setFetching(false);
 
-    if (data && data.Response === "True") {
-
-        setFormData({
-            ...formData,
-            title: data.Title,
-            director: data.Director,
-            genre: data.Genre,
-            year: data.Year,
-            imdb_rating: data.imdbRating,
-            poster_url: data.Poster,
-            type: data.Type === "series" ? "TV Show" : "Movie"
-        });
-
-        alert("Movie details fetched successfully!");
-
-    } else {
-        alert("Movie not found.");
-    }
-};
+        if (data && data.Response === "True") {
+            setFormData({
+                ...formData,
+                title: data.Title,
+                director: data.Director,
+                genre: data.Genre,
+                year: data.Year,
+                imdb_rating: data.imdbRating,
+                poster_url: data.Poster,
+                type: data.Type === "series" ? "TV Show" : "Movie",
+            });
+        } else {
+            alert("Movie not found. Try a different title.");
+        }
+    };
 
     return (
-        <div className="form-container">
-            <h1>Add Movie / TV Show</h1>
+        <div className="form-page">
+            <div className="form-container">
+                {/* Header */}
+                <div className="form-header">
+                    <h1>Add Movie / TV Show</h1>
+                    <p>Search by title to auto-fill details, or fill them in manually.</p>
+                </div>
 
-            <form onSubmit={handleSubmit}>
+                <form className="form-body" onSubmit={handleSubmit}>
 
-               <div className="title-search">
+                    {/* ── Title + Fetch ── */}
+                    <div className="title-search">
+                        <div className="form-group" style={{ flex: 1 }}>
+                            <label className="form-label" htmlFor="add-title">Movie Title</label>
+                            <input
+                                id="add-title"
+                                className="form-control"
+                                type="text"
+                                name="title"
+                                placeholder="e.g. Inception"
+                                value={formData.title}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <button
+                            type="button"
+                            className="btn-fetch"
+                            id="fetch-details-btn"
+                            onClick={handleFetchMovie}
+                            disabled={fetching}
+                            style={{ alignSelf: "flex-end" }}
+                        >
+                            {fetching ? (
+                                <>
+                                    <span className="spinner" />
+                                    Fetching…
+                                </>
+                            ) : (
+                                <>🔍 Fetch Details</>
+                            )}
+                        </button>
+                    </div>
 
-    <input
-        type="text"
-        name="title"
-        placeholder="Enter movie title"
-        value={formData.title}
-        onChange={handleChange}
-        required
-    />
+                    {/* ── Poster Preview ── */}
+                    {formData.poster_url && formData.poster_url !== "N/A" && (
+                        <div className="poster-preview-card">
+                            <img
+                                src={formData.poster_url}
+                                alt="Movie Poster"
+                                className="poster-preview"
+                            />
+                            <div className="poster-preview-info">
+                                <h4>{formData.title}</h4>
+                                {formData.year && (
+                                    <p>📅 {formData.year}</p>
+                                )}
+                                {formData.imdb_rating && formData.imdb_rating !== "N/A" && (
+                                    <p>⭐ IMDb {formData.imdb_rating}</p>
+                                )}
+                                {formData.director && (
+                                    <p>🎬 {formData.director}</p>
+                                )}
+                            </div>
+                        </div>
+                    )}
 
-    <button
-        type="button"
-        onClick={handleFetchMovie}
-    >
-        🔍 Fetch Details
-    </button>
+                    {/* ── Type + Status ── */}
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label className="form-label" htmlFor="add-type">Type</label>
+                            <select
+                                id="add-type"
+                                className="form-control"
+                                name="type"
+                                value={formData.type}
+                                onChange={handleChange}
+                            >
+                                <option>Movie</option>
+                                <option>TV Show</option>
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label" htmlFor="add-status">Watch Status</label>
+                            <select
+                                id="add-status"
+                                className="form-control"
+                                name="status"
+                                value={formData.status}
+                                onChange={handleChange}
+                            >
+                                <option>Wishlist</option>
+                                <option>Watching</option>
+                                <option>Completed</option>
+                            </select>
+                        </div>
+                    </div>
 
-</div>
- {
-        formData.poster_url && (
-            <img
-                src={formData.poster_url}
-                alt="Movie Poster"
-                className="poster-preview"
-            />
-        )
-    }
+                    {/* ── Director + Genre ── */}
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label className="form-label" htmlFor="add-director">Director</label>
+                            <input
+                                id="add-director"
+                                className="form-control"
+                                type="text"
+                                name="director"
+                                value={formData.director}
+                                placeholder="Director name"
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label" htmlFor="add-genre">Genre</label>
+                            <input
+                                id="add-genre"
+                                className="form-control"
+                                type="text"
+                                name="genre"
+                                value={formData.genre}
+                                placeholder="e.g. Action, Drama"
+                                onChange={handleChange}
+                            />
+                        </div>
+                    </div>
 
+                    {/* ── Platform ── */}
+                    <div className="form-group">
+                        <label className="form-label" htmlFor="add-platform">Streaming Platform</label>
+                        <input
+                            id="add-platform"
+                            className="form-control"
+                            type="text"
+                            name="platform"
+                            value={formData.platform}
+                            placeholder="e.g. Netflix, Prime Video"
+                            onChange={handleChange}
+                        />
+                    </div>
 
-               <select
-    name="type"
-    value={formData.type}
-    onChange={handleChange}
->
-                    <option>Movie</option>
-                    <option>TV Show</option>
-                </select>
+                    {/* ── Episodes (TV Show only) ── */}
+                    {formData.type === "TV Show" && (
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label className="form-label" htmlFor="add-ep-watched">Episodes Watched</label>
+                                <input
+                                    id="add-ep-watched"
+                                    className="form-control"
+                                    type="number"
+                                    name="episodes_watched"
+                                    placeholder="0"
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label" htmlFor="add-ep-total">Total Episodes</label>
+                                <input
+                                    id="add-ep-total"
+                                    className="form-control"
+                                    type="number"
+                                    name="total_episodes"
+                                    placeholder="0"
+                                    onChange={handleChange}
+                                />
+                            </div>
+                        </div>
+                    )}
 
-                <input
-    type="text"
-    name="director"
-    value={formData.director}
-    placeholder="Director"
-    onChange={handleChange}
-/>
+                    {/* ── Rating ── */}
+                    <div className="form-group">
+                        <label className="form-label" htmlFor="add-rating">Your Rating (out of 10)</label>
+                        <input
+                            id="add-rating"
+                            className="form-control"
+                            type="number"
+                            name="rating"
+                            value={formData.rating ?? ""}
+                            placeholder="1 – 10"
+                            min="1"
+                            max="10"
+                            onChange={handleChange}
+                        />
+                    </div>
 
-                 <input
-    type="text"
-    name="genre"
-    value={formData.genre}
-    placeholder="Genre"
-    onChange={handleChange}
-/>
+                    {/* ── Review ── */}
+                    <div className="form-group">
+                        <label className="form-label" htmlFor="add-review">Your Review</label>
+                        <textarea
+                            id="add-review"
+                            className="form-control"
+                            name="review"
+                            value={formData.review}
+                            placeholder="Write a short review…"
+                            onChange={handleChange}
+                        />
+                    </div>
 
-                <input
-    type="text"
-    name="platform"
-    value={formData.platform}
-    placeholder="Platform"
-    onChange={handleChange}
-/>
+                    {/* ── Submit ── */}
+                    <button type="submit" className="btn-submit" id="add-movie-submit-btn">
+                        🎬 Add to Collection
+                    </button>
 
-                <select
-                    name="status"
-                    onChange={handleChange}
-                >
-                    <option>Watching</option>
-                    <option>Completed</option>
-                    <option>Wishlist</option>
-                </select>
-
-                <input
-                    type="number"
-                    name="episodes_watched"
-                    placeholder="Episodes Watched"
-                    onChange={handleChange}
-                />
-
-                <input
-                    type="number"
-                    name="total_episodes"
-                    placeholder="Total Episodes"
-                    onChange={handleChange}
-                />
-
-               <input
-    type="number"
-    name="rating"
-    value={formData.rating}
-    placeholder="Your Rating"
-    onChange={handleChange}
-/>
-
-              <textarea
-    name="review"
-    value={formData.review}
-    placeholder="Review"
-    onChange={handleChange}
-/>
-
-                <button type="submit">
-                    Add Movie
-                </button>
-
-            </form>
+                </form>
+            </div>
         </div>
     );
 }

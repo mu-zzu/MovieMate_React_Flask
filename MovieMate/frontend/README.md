@@ -1,18 +1,17 @@
-# React + Vite
+Project Overview
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+MovieMate is a full-stack web application that helps users manage their personal collection of movies and TV shows. Users can add, update, delete, and track their watch progress, ratings, and reviews. The application provides a clean and interactive interface built with React and a Flask-based REST API with SQLite database support.
 
-Currently, two official plugins are available:
+Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Frontend React.js React Router Axios CSS3
 
-## React Compiler
+Backend Python Flask Flask SQLAlchemy Flask CORS Database SQLite API Integration
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+OMDb API (for fetching movie details)
 
-Note: This will impact Vite dev & build performances.
+Features Implemented 🎥 Movie & TV Show Management Add movies and TV shows Update existing entries Delete entries View complete movie collection 📺 Watch Tracking Track watching status: Watching Completed Wishlist Track TV show episode progress ⭐ Ratings & Reviews Give personal ratings to watched content Add reviews and notes 🔍 Search, Filter & Sort Filter collection by: Genre Platform Watch status Sort movies by: Title Rating 🎨 User Interface Modern responsive dashboard design Navigation bar using React Router Movie cards with organized details Styled forms for adding and editing content Background image with improved UI styling 🔗 Backend REST APIs
 
-## Expanding the ESLint configuration
+Implemented RESTful APIs for:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+GET all movies GET single movie details POST add new movie PUT update movie information DELETE movie Filter and sorting APIs 🗄️ Database SQLite database integration using Flask-SQLAlchemy Persistent storage of movie information 🤖 Optional Enhancement – OMDb API Search movies using OMDb API Automatically fetch movie details such as: Movie title Director Genre Release year IMDb rating Movie poster preview
